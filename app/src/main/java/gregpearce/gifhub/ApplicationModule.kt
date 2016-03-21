@@ -22,7 +22,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideExampleString(): String {
-        return "example injection"
+    fun provideGiphyApi(): GiphyApi {
+        return GiphyApi()
     }
 }
