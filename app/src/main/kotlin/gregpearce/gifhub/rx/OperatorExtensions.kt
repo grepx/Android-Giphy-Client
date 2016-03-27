@@ -8,7 +8,7 @@ import rx.schedulers.Schedulers
 /**
  * Always subscribe on IO Thread and observe on UI Thread, prevent blocking UI Thread
  */
-fun <T> Observable<T>.applySchedulers() = subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+inline fun <T> Observable<T>.applySchedulers() = subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
 /**
  *  Assert that some condition is true or throw a runtime exception
