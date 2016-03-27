@@ -8,6 +8,10 @@ import javax.inject.Singleton
 
 import dagger.Module
 import dagger.Provides
+import gregpearce.gifhub.api.GiphyApi
+import retrofit.GsonConverterFactory
+import retrofit.Retrofit
+import retrofit.RxJavaCallAdapterFactory
 
 /**
  * A module for Android-specific dependencies which require a [android.content.Context] or [ ] to create.
@@ -23,6 +27,11 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideGiphyApi(): GiphyApi {
-        return GiphyApi()
+        val retrofit = Retrofit.Builder()
+                .baseUrl(GiphyApiUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        return retrofit.create(GiphyApi::class.java)
     }
 }

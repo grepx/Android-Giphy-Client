@@ -2,12 +2,13 @@ package gregpearce.gifhub
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import gregpearce.gifhub.api.GiphyApi
+import gregpearce.gifhub.rx.applySchedulers
+import gregpearce.gifhub.rx.assert
+import gregpearce.gifhub.rx.debug
 import org.jetbrains.anko.*
-import org.jetbrains.anko.collections.forEachByIndex
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,18 +29,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun search(query: String) {
-        giphyApi.search(query)
-                // subscribe on io thread to prevent blocking main thread
-                .subscribeOn(Schedulers.io())
-                // observe on main thread to do UI stuff
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    var results = "Search results:"
-                    it.url.forEachByIndex {
-                        results += it
-                        results += "\n"
-                    }
-                    toast(results)
-                }
+        giphyApi.search(GiphyApiKey, query)
+                // assert that the response code is valid
+                .assert({it.meta.status == 200},
+                        {"Invalid Giphy API response status code: ${it.meta.status}"})
+                // retry 3 times before giving up
+                .retry(3)
+                .debug { "Received API response, data size: ${it.data.size}" }
+                // apply the schedulers just before subscribe, so all the above work is done off the UI Thread
+                .applySchedulers()
+                .subscribe({
+                    toast("Received Giphy API reponse")
+                }, {
+                    Log.e("GifHubApp", "API failed to respond")
+                })
     }
 }
