@@ -1,6 +1,8 @@
-package gregpearce.gifhub
+package gregpearce.gifhub.app
 
 import dagger.Component
+import gregpearce.gifhub.view.MainActivity
+import gregpearce.gifhub.app.MainApplication
 import javax.inject.Singleton
 
 @Singleton

@@ -1,4 +1,4 @@
-package gregpearce.gifhub
+package gregpearce.gifhub.app
 
 import android.app.Application
 import android.content.Context

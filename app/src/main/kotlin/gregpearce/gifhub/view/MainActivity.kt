@@ -1,9 +1,11 @@
-package gregpearce.gifhub
+package gregpearce.gifhub.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import gregpearce.gifhub.api.GiphyApi
+import gregpearce.gifhub.app.GiphyApiKey
+import gregpearce.gifhub.app.MainApplication
 import gregpearce.gifhub.rx.applySchedulers
 import gregpearce.gifhub.rx.assert
 import gregpearce.gifhub.rx.debug

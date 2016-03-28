@@ -35,7 +35,7 @@ fun <T> Observable<T>.debug(getMessage: (T) -> String) =
 
 
 /**
- * For debug log statements that you intent to leave inside the app (won't be logged in production builds)
+ * For debug log statements that you intend to leave inside the app (won't be logged in production builds)
  */
 fun <T> Observable<T>.timberd(getMessage: (T) -> String) =
         map {
