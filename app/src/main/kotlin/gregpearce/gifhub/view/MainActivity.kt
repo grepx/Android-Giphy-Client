@@ -23,21 +23,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         MainApplication.graph.inject(this)
-
-        verticalLayout {
-            val searchQuery = editText()
-            button("Search for gifs...") {
-                onClick { search(searchQuery.text.toString()) }
-            }
-        }
+        MainUI().setContentView(this)
     }
 
     fun search(query: String) {
         giphyApi.search(GiphyApiKey, query)
                 .timberd { "Giphy API response received." }
                 // assert that the response code is valid
-                .assert({it.meta.status == 200},
-                        {"Invalid Giphy API response status code: ${it.meta.status}"})
+                .assert({ it.meta.status == 200 },
+                        { "Invalid Giphy API response status code: ${it.meta.status}" })
                 // retry 3 times before giving up
                 .retry(3)
                 // apply the schedulers just before subscribe, so all the above work is done off the UI Thread
