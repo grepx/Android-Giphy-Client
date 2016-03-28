@@ -6,6 +6,10 @@ import android.util.Log
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.app.GiphyApiKey
 import gregpearce.gifhub.app.MainApplication
+import gregpearce.gifhub.di.DaggerViewComponent
+import gregpearce.gifhub.di.HasComponent
+import gregpearce.gifhub.di.ViewComponent
+import gregpearce.gifhub.di.ViewModule
 import gregpearce.gifhub.rx.applySchedulers
 import gregpearce.gifhub.rx.assert
 import gregpearce.gifhub.rx.debug
@@ -14,32 +18,22 @@ import org.jetbrains.anko.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var giphyApi: GiphyApi
+class MainActivity : AppCompatActivity(), HasComponent {
+    lateinit var viewComponent: ViewComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MainApplication.graph.inject(this)
+        viewComponent = DaggerViewComponent.builder()
+                .applicationComponent(MainApplication.graph)
+                .viewModule(ViewModule(this))
+                .build()
+
+        viewComponent.inject(this)
         MainUI().setContentView(this)
     }
 
-    fun search(query: String) {
-        giphyApi.search(GiphyApiKey, query)
-                .timberd { "Giphy API response received." }
-                // assert that the response code is valid
-                .assert({ it.meta.status == 200 },
-                        { "Invalid Giphy API response status code: ${it.meta.status}" })
-                // retry 3 times before giving up
-                .retry(3)
-                // apply the schedulers just before subscribe, so all the above work is done off the UI Thread
-                .applySchedulers()
-                .subscribe({
-                    toast("Received Giphy API reponse")
-                }, {
-                    Timber.e(it, it.message)
-                })
+    override fun getComponent(): ViewComponent {
+        return viewComponent
     }
 }

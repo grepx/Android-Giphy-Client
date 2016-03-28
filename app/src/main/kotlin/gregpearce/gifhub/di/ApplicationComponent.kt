@@ -1,8 +1,9 @@
-package gregpearce.gifhub.app
+package gregpearce.gifhub.di
 
 import dagger.Component
 import gregpearce.gifhub.view.MainActivity
 import gregpearce.gifhub.app.MainApplication
+import gregpearce.gifhub.presenter.MainPresenter
 import javax.inject.Singleton
 
 @Singleton
@@ -10,5 +11,6 @@ import javax.inject.Singleton
 interface ApplicationComponent {
     fun inject(application: MainApplication)
 
-    fun inject(mainActivity: MainActivity)
+    // expose the presenter to the sub-graphs
+    fun exposeMainPresenter() : MainPresenter
 }
