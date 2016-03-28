@@ -4,6 +4,7 @@ import android.util.Log
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * Always subscribe on IO Thread and observe on UI Thread, prevent blocking UI Thread
@@ -33,3 +34,11 @@ fun <T> Observable<T>.debug(getMessage: (T) -> String) =
         }
 
 
+/**
+ * For debug log statements that you intent to leave inside the app (won't be logged in production builds)
+ */
+fun <T> Observable<T>.timberd(getMessage: (T) -> String) =
+        map {
+            Timber.d(getMessage(it))
+            it
+        }

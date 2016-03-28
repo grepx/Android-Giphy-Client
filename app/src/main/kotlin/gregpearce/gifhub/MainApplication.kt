@@ -1,6 +1,7 @@
 package gregpearce.gifhub
 
 import android.app.Application
+import timber.log.Timber
 
 class MainApplication : Application() {
 
@@ -10,6 +11,8 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Timber.plant(Timber.DebugTree())
 
         graph = DaggerApplicationComponent.builder().applicationModule(ApplicationModule(this)).build()
         graph.inject(this)
