@@ -2,7 +2,12 @@ package gregpearce.gifhub.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.InputType
 import android.util.Log
+import android.view.Gravity
+import android.view.ViewManager
+import android.widget.Button
+import android.widget.EditText
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.app.GiphyApiKey
 import gregpearce.gifhub.app.MainApplication
@@ -18,22 +23,17 @@ import org.jetbrains.anko.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), HasComponent {
-    lateinit var viewComponent: ViewComponent
-
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewComponent = DaggerViewComponent.builder()
-                .applicationComponent(MainApplication.graph)
-                .viewModule(ViewModule(this))
-                .build()
-
-        viewComponent.inject(this)
-        MainUI().setContentView(this)
+        getComponent().inject(this)
+        RootUI().setContentView(this)
     }
 
-    override fun getComponent(): ViewComponent {
-        return viewComponent
+    class RootUI : AnkoComponent<MainActivity> {
+        override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
+            mainViewImp()
+        }
     }
 }
+
