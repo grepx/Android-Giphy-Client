@@ -8,41 +8,41 @@ import gregpearce.gifhub.rx.assert
 import gregpearce.gifhub.rx.timberd
 import gregpearce.gifhub.view.MainView
 import org.jetbrains.anko.toast
+import rx.Observable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MainPresenterImpl @Inject constructor() : MainPresenter {
-
     @Inject lateinit var giphyApi: GiphyApi
 
-    var view: MainView? = null
-
-    override fun registerView(view: MainView) {
-        this.view = view
+    /**
+     * Maps search terms to search results (by way of a network query + other business logic)
+     */
+    override fun searchResults(query: Observable<String>): Observable<SearchResults> {
+        var results = query
+                // wait for 500ms pause between typing characters to prevent spamming the network on every character
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .timberd { "Querying for: $it" }
+                .flatMap { search(it) }
+                .map {
+                    // map the network model to the view model
+                    var urls = it.data.map { it.images.fixedWidth.webp }
+                    SearchResults(urls)
+                }
+        return results
     }
 
-    override fun unregisterView(view: MainView) {
-        this.view = null
-    }
-
-    override fun search(query: String) {
+    fun search(query: String): Observable<GiphySearchResponse> {
         // todo: move this logic out of the presenter
-        giphyApi.search(GiphyApiKey, query)
+        return giphyApi.search(GiphyApiKey, query)
                 .timberd { "Giphy API response received." }
                 // assert that the response code is valid
                 .assert({ it.meta.status == 200 },
                         { "Invalid Giphy API response status code: ${it.meta.status}" })
                 // retry 3 times before giving up
                 .retry(3)
-                // apply the schedulers just before subscribe, so all the above work is done off the UI Thread
-                .applySchedulers()
-                .subscribe({
-                    var urls = it.data.map { it.images.fixedWidth.webp }
-                    view?.setGifUrls(urls)
-                }, {
-                    Timber.e(it, it.message)
-                })
     }
 }
