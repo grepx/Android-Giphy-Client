@@ -1,26 +1,20 @@
 package gregpearce.gifhub.view
 
-import android.app.Activity
 import android.content.Context
-import android.net.Uri
+import android.support.v7.widget.GridLayoutManager
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.ViewManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding.widget.textChanges
-import gregpearce.gifhub.R
 import gregpearce.gifhub.presenter.MainPresenter
-import gregpearce.gifhub.util.rx.addToComposite
 import gregpearce.gifhub.util.rx.applySchedulers
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.recyclerview.v7.recyclerView
 import rx.android.schedulers.AndroidSchedulers
-import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -30,7 +24,7 @@ class MainViewImp : LinearLayout, MainView {
     @Inject lateinit var presenter: MainPresenter
 
     lateinit var searchEditText: EditText
-    lateinit var searchResults: LinearLayout
+    val gifAdapter = GifAdapter()
 
     private fun init() {
         (context as BaseActivity).getComponent().inject(this)
@@ -44,15 +38,12 @@ class MainViewImp : LinearLayout, MainView {
 
         searchEditText = editText {
             text.insert(0, presenter.getQuery())
+            text.insert(0, "cat")
         }
 
-        searchEditText.textChanges()
-
-        scrollView {
-            layoutDirection = VERTICAL
-            searchResults = linearLayout {
-                orientation = VERTICAL
-            }
+        recyclerView {
+            adapter = gifAdapter
+            layoutManager = GridLayoutManager(activity, 2)
         }
 
         val customStyle = { v: Any ->
@@ -85,12 +76,7 @@ class MainViewImp : LinearLayout, MainView {
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
                 .subscribe({
-                    searchResults.removeAllViews()
-                    it.urls.forEach {
-                        var imageView = ImageView(activity)
-                        Glide.with(activity).load(it).placeholder(R.mipmap.ic_launcher).into(imageView)
-                        searchResults.addView(imageView)
-                    }
+                    gifAdapter.setModel(it.gifs)
                 }, {
                     Timber.e(it, it.message)
                 })
