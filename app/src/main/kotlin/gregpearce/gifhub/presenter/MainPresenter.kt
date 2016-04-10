@@ -10,5 +10,5 @@ import timber.log.Timber
 
 interface MainPresenter {
     fun getQuery(): String
-    fun doSearch(query: Observable<String>): Observable<SearchResult>
+    fun doSearch(query: String): Observable<SearchResult>
 }

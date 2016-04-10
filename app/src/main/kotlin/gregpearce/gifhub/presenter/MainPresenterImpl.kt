@@ -25,14 +25,7 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
     /**
      * Maps search terms to search results (by way of a network query + other business logic)
      */
-    override fun doSearch(query: Observable<String>): Observable<SearchResult> {
-        // wait for 500ms pause between typing characters to prevent spamming the network on every character
-        return query.debounce(500, TimeUnit.MILLISECONDS)
-                .timberd { "Querying for: $it" }
-                .flatMap { search(it) }
-    }
-
-    private fun search(query: String): Observable<SearchResult> {
+    override fun doSearch(query :String): Observable<SearchResult> {
         // if the query parameter has changed, do a new query. Otherwise, reuse the current one.
         if (query != this.searchQuery) {
             this.searchQuery = query

@@ -13,12 +13,14 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.presenter.MainPresenter
 import gregpearce.gifhub.rx.addToComposite
 import gregpearce.gifhub.rx.applySchedulers
+import gregpearce.gifhub.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainViewImp : LinearLayout, MainView {
@@ -60,12 +62,23 @@ class MainViewImp : LinearLayout, MainView {
     }
 
     private fun subscribeToPresenter() {
-        val searchTerm =
-                searchEditText.textChanges().subscribeOn(AndroidSchedulers.mainThread())
-                        .map { it.toString() }
-                        .filter { !it.isEmpty() }
-
-        presenter.doSearch(searchTerm)
+        /* The basic idea:
+            - We observe changes to the EditText field
+            - flatMap the changes to calls to the presenter search API
+            - subscribe to the result and display in the UI
+         */
+        searchEditText.textChanges()
+                // subscribe to the text changes on the UI thread
+                .subscribeOn(AndroidSchedulers.mainThread())
+                // convert to a string
+                .map { it.toString() }
+                // filter out blank searches
+                .filter { !it.isEmpty() }
+                // wait for 500ms pause between typing characters to prevent spamming the network on every character
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .timberd { "Querying for: $it" }
+                // perform a search for the search term
+                .flatMap { presenter.doSearch(it) }
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
                 .subscribe({
