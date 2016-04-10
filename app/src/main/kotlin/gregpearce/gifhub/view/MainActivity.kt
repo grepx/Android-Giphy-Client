@@ -15,10 +15,10 @@ import gregpearce.gifhub.di.DaggerViewComponent
 import gregpearce.gifhub.di.HasComponent
 import gregpearce.gifhub.di.ViewComponent
 import gregpearce.gifhub.di.ViewModule
-import gregpearce.gifhub.rx.applySchedulers
-import gregpearce.gifhub.rx.assert
-import gregpearce.gifhub.rx.debug
-import gregpearce.gifhub.rx.timberd
+import gregpearce.gifhub.util.rx.applySchedulers
+import gregpearce.gifhub.util.rx.assert
+import gregpearce.gifhub.util.rx.debug
+import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import timber.log.Timber
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package gregpearce.gifhub.rx
+package gregpearce.gifhub.util.rx
 
 import android.util.Log
 import rx.Observable
@@ -16,7 +16,7 @@ inline fun <T> Observable<T>.applySchedulers() = subscribeOn(Schedulers.io()).ob
  */
 fun <T> Observable<T>.assert(condition: (T) -> Boolean, message: (T) -> String) =
         map {
-            // assert that condition is true
+            // throw a runtime exception if the condition isn't true
             if (!condition(it)) {
                 throw RuntimeException(message(it))
             }

@@ -1,4 +1,4 @@
-package gregpearce.gifhub.rx
+package gregpearce.gifhub.util.rx
 
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription

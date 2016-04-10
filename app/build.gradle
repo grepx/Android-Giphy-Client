@@ -33,7 +33,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Android
-    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile "com.android.support:support-v4:$support_version"
+    compile "com.android.support:appcompat-v7:$support_version"
 
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -59,4 +60,5 @@ dependencies {
 
     // Other
     compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

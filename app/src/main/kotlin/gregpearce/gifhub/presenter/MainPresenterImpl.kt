@@ -3,9 +3,9 @@ package gregpearce.gifhub.presenter
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.api.model.GiphySearchResponse
 import gregpearce.gifhub.app.GiphyApiKey
-import gregpearce.gifhub.rx.applySchedulers
-import gregpearce.gifhub.rx.assert
-import gregpearce.gifhub.rx.timberd
+import gregpearce.gifhub.util.rx.applySchedulers
+import gregpearce.gifhub.util.rx.assert
+import gregpearce.gifhub.util.rx.timberd
 import gregpearce.gifhub.view.MainView
 import org.jetbrains.anko.toast
 import rx.Observable
@@ -30,7 +30,7 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
         if (query != this.searchQuery) {
             this.searchQuery = query
             this.searchResult = giphyApi.search(GiphyApiKey, query)
-                    .timberd { "Giphy API response received." }
+                    .timberd { "${it.data.size} gifs returned from search." }
                     // assert that the response code is valid
                     .assert({ it.meta.status == 200 },
                             { "Invalid Giphy API response status code: ${it.meta.status}" })
@@ -38,7 +38,7 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
                     .retry(3)
                     .map {
                         // map the network model to the view model
-                        var urls = it.data.map { it.images.fixedWidth.webp }
+                        var urls = it.data.map { it.images.fixedWidthStill.url }
                         SearchResult(urls)
                     }
                     // cache the result, if there's a config change we can resubmit

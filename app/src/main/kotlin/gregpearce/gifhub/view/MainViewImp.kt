@@ -2,21 +2,23 @@ package gregpearce.gifhub.view
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding.widget.textChanges
+import gregpearce.gifhub.R
 import gregpearce.gifhub.presenter.MainPresenter
-import gregpearce.gifhub.rx.addToComposite
-import gregpearce.gifhub.rx.applySchedulers
-import gregpearce.gifhub.rx.timberd
+import gregpearce.gifhub.util.rx.addToComposite
+import gregpearce.gifhub.util.rx.applySchedulers
+import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
-import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -30,7 +32,7 @@ class MainViewImp : LinearLayout, MainView {
     val compositeSubscription = CompositeSubscription()
 
     lateinit var searchEditText: EditText
-    lateinit var searchResults: TextView
+    lateinit var searchResults: LinearLayout
 
     private fun init() {
         (context as BaseActivity).getComponent().inject(this)
@@ -39,7 +41,7 @@ class MainViewImp : LinearLayout, MainView {
     }
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
-        padding = dip(32)
+        padding = dip(5)
         orientation = VERTICAL
 
         searchEditText = editText {
@@ -48,8 +50,8 @@ class MainViewImp : LinearLayout, MainView {
 
         searchEditText.textChanges()
 
-        searchResults = textView {
-            text = "Perform a search to view results here"
+        searchResults = linearLayout {
+            orientation = VERTICAL
         }
 
         val customStyle = { v: Any ->
@@ -64,7 +66,7 @@ class MainViewImp : LinearLayout, MainView {
     private fun subscribeToPresenter() {
         /* The basic idea:
             - We observe changes to the EditText field
-            - flatMap the changes to calls to the presenter search API
+            - flatMap the changes to calls to the presenter search method
             - subscribe to the result and display in the UI
          */
         searchEditText.textChanges()
@@ -72,18 +74,22 @@ class MainViewImp : LinearLayout, MainView {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 // convert to a string
                 .map { it.toString() }
-                // filter out blank searches
-                .filter { !it.isEmpty() }
                 // wait for 500ms pause between typing characters to prevent spamming the network on every character
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .timberd { "Querying for: $it" }
+
                 // perform a search for the search term
+                .timberd { "Querying for: $it" }
                 .flatMap { presenter.doSearch(it) }
+
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
                 .subscribe({
-                    val resultsText = it.urls.reduceRight { text, url -> "$text\n$url" }
-                    searchResults.text = resultsText
+                    searchResults.removeAllViews()
+                    it.urls.forEach {
+                        var imageView = ImageView(activity)
+                        Glide.with(activity).load(it).placeholder(R.mipmap.ic_launcher).into(imageView)
+                        searchResults.addView(imageView)
+                    }
                 }, {
                     Timber.e(it, it.message)
                 })

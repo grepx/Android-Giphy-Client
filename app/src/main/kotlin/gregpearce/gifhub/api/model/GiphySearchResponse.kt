@@ -8,8 +8,9 @@ import com.google.gson.annotations.SerializedName
 data class GiphySearchResponse(val data: List<GiphyData>, val meta: Meta, val pagination: Pagination) {
     data class GiphyData(val id: String, val images: ImageFormats)
 
-    data class ImageFormats(@SerializedName("fixed_width") val fixedWidth: FixedWidthImage)
-    data class FixedWidthImage(val webp: String)
+    data class ImageFormats(@SerializedName("fixed_width") val fixedWidth: GiphyImage,
+                            @SerializedName("fixed_width_still") val fixedWidthStill: GiphyImage)
+    data class GiphyImage(val url: String, val width: Int, val height: Int)
 
     data class Meta(val status: Int)
 
