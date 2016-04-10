@@ -9,5 +9,6 @@ import rx.Observable
 import timber.log.Timber
 
 interface MainPresenter {
-    fun searchResults(query: Observable<String>) : Observable<SearchResults>
+    fun getQuery(): String
+    fun doSearch(query: Observable<String>): Observable<SearchResult>
 }

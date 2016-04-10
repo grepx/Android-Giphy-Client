@@ -40,7 +40,9 @@ class MainViewImp : LinearLayout, MainView {
         padding = dip(32)
         orientation = VERTICAL
 
-        searchEditText = editText()
+        searchEditText = editText {
+            text.insert(0, presenter.getQuery())
+        }
 
         searchEditText.textChanges()
 
@@ -63,7 +65,7 @@ class MainViewImp : LinearLayout, MainView {
                         .map { it.toString() }
                         .filter { !it.isEmpty() }
 
-        presenter.searchResults(searchTerm)
+        presenter.doSearch(searchTerm)
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
                 .subscribe({

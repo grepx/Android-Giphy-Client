@@ -12,7 +12,7 @@ import gregpearce.gifhub.di.ViewModule
  * A base class that contains logic common to all activities, such as the Retained Fragment that manages Presenters.
  * It also exposes a common interface to all views for DI.
  */
-open class BaseActivity : AppCompatActivity(), HasComponent {
+abstract class BaseActivity : AppCompatActivity(), HasComponent {
     lateinit var viewComponent: ViewComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
