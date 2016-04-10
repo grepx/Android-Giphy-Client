@@ -29,8 +29,6 @@ class MainViewImp : LinearLayout, MainView {
     @Inject lateinit var activity: BaseActivity
     @Inject lateinit var presenter: MainPresenter
 
-    val compositeSubscription = CompositeSubscription()
-
     lateinit var searchEditText: EditText
     lateinit var searchResults: LinearLayout
 
@@ -50,8 +48,11 @@ class MainViewImp : LinearLayout, MainView {
 
         searchEditText.textChanges()
 
-        searchResults = linearLayout {
-            orientation = VERTICAL
+        scrollView {
+            layoutDirection = VERTICAL
+            searchResults = linearLayout {
+                orientation = VERTICAL
+            }
         }
 
         val customStyle = { v: Any ->
@@ -93,7 +94,6 @@ class MainViewImp : LinearLayout, MainView {
                 }, {
                     Timber.e(it, it.message)
                 })
-                .addToComposite(compositeSubscription)
     }
 
     // todo: see if the constructors can be abstracted out to an interface or something else clever
