@@ -11,9 +11,11 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.presenter.MainPresenter
 import gregpearce.gifhub.util.rx.applySchedulers
 import gregpearce.gifhub.util.rx.timberd
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.editText
 import org.jetbrains.anko.recyclerview.v7.recyclerView
+import org.jetbrains.anko.style
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -33,7 +35,6 @@ class MainViewImp : LinearLayout, MainView {
     }
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
-        padding = dip(5)
         orientation = VERTICAL
 
         searchEditText = editText {
