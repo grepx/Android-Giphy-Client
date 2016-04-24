@@ -74,11 +74,16 @@ class MainView : LinearLayout {
                 .map { it.toString() }
                 // wait for 500ms pause between typing characters to prevent spamming the network on every character
                 .debounce(500, TimeUnit.MILLISECONDS)
+                // filter out duplicates
+                .distinctUntilChanged()
 
                 // perform a search for the search term
                 .timberd { "Querying for: $it" }
                 // get page 0
-                .flatMap { presenter.doSearch(it, 0) }
+                .flatMap {
+                    presenter.setQuery(it)
+                    presenter.getSearchResultPage(0)
+                }
 
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()

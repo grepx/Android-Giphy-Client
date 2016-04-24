@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import gregpearce.gifhub.R
-import gregpearce.gifhub.presenter.Gif
+import gregpearce.gifhub.model.Gif
 import gregpearce.gifhub.util.glide.listener
 import org.jetbrains.anko.*
 

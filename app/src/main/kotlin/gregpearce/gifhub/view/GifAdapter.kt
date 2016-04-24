@@ -2,7 +2,7 @@ package gregpearce.gifhub.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import gregpearce.gifhub.presenter.Gif
+import gregpearce.gifhub.model.Gif
 
 class GifAdapter : RecyclerView.Adapter<GifViewHolder>() {
     var gifs = listOf<Gif>()

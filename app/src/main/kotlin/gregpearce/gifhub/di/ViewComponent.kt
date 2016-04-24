@@ -1,10 +1,9 @@
 package gregpearce.gifhub.di
 
 import dagger.Component
-import gregpearce.gifhub.app.MainApplication
+import gregpearce.gifhub.view.GifAdapter
 import gregpearce.gifhub.view.MainActivity
 import gregpearce.gifhub.view.MainView
-import javax.inject.Singleton
 
 @ViewScope
 @Component(
@@ -14,4 +13,5 @@ import javax.inject.Singleton
 interface ViewComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(mainView: MainView)
+    fun inject(mainView: GifAdapter)
 }
