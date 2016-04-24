@@ -10,13 +10,21 @@ import com.bumptech.glide.Glide
 import gregpearce.gifhub.R
 import gregpearce.gifhub.model.Gif
 import gregpearce.gifhub.util.glide.listener
+import gregpearce.gifhub.util.rx.addToComposite
+import gregpearce.gifhub.util.rx.applyDefaults
 import org.jetbrains.anko.*
+import rx.Observable
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 class GifView : RelativeLayout {
     private enum class ViewState { LoadingSpinner, Thumbnail, Error }
 
     lateinit var thumbnail: ImageView
     lateinit var loadingSpinner: ProgressBar
+
+    // used to track and unsubscribe previous model subscriptions on view holder rebinding
+    var subscription = CompositeSubscription()
 
     private fun init() {
         initView()
@@ -38,14 +46,26 @@ class GifView : RelativeLayout {
      * We need to create a new ImageView each time since otherwise it can cause errors and side effects as Glide
      * loads a new image and attempts to adjust the size etc.
      */
-    private fun getThumbnailImageView() : ImageView = imageView {
+    private fun getThumbnailImageView(): ImageView = imageView {
         layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
         scaleType = ImageView.ScaleType.FIT_CENTER
     }
 
 
-    fun setModel(gif: Gif) {
+    fun setModel(gif: Observable<Gif>) {
         showView(ViewState.LoadingSpinner)
+        // unsubscribe the previous subscription
+        subscription.clear()
+
+        gif.applyDefaults()
+                .subscribe ({
+                    displayGif(it)
+                }, {
+                    Timber.e(it, it.message)
+                }).addToComposite(subscription)
+    }
+
+    private fun displayGif(gif: Gif) {
         // clear any old unfinished Glide loads from the image view
         Glide.clear(thumbnail)
         thumbnail = getThumbnailImageView()

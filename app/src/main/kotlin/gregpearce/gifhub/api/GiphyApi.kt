@@ -10,5 +10,8 @@ import rx.Observable
  */
 interface  GiphyApi {
     @GET("search")
-    fun search(@Query("api_key") apiKey: String, @Query("q") query: String) : Observable<GiphySearchResponse>
+    fun search(@Query("api_key") apiKey: String,
+               @Query("q") query: String,
+               @Query("offset") offset: Int,
+               @Query("limit") limit: Int) : Observable<GiphySearchResponse>
 }

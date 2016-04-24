@@ -9,8 +9,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
+import gregpearce.gifhub.app.GiphyPageStart
 import gregpearce.gifhub.presenter.MainPresenter
-import gregpearce.gifhub.util.rx.applySchedulers
+import gregpearce.gifhub.util.rx.applyDefaults
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
@@ -26,10 +27,11 @@ class MainView : LinearLayout {
 
     lateinit var searchEditText: EditText
     lateinit var resultsCountTextView: TextView
-    val gifAdapter = GifAdapter()
+    val gifAdapter: GifAdapter
 
     init {
         (context as BaseActivity).getComponent().inject(this)
+        gifAdapter = GifAdapter(presenter)
         initView()
         setupViewModel()
     }
@@ -82,18 +84,18 @@ class MainView : LinearLayout {
                 // get page 0
                 .flatMap {
                     presenter.setQuery(it)
-                    presenter.getSearchResultPage(0)
+                    presenter.getSearchResultPage(GiphyPageStart)
                 }
 
+        searchResultViewModel
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
-                .applySchedulers()
-
-        searchResultViewModel.subscribe({
-            showResultsCount(it.totalCount)
-            gifAdapter.setModel(it.gifs)
-        }, {
-            Timber.e(it, it.message)
-        })
+                .applyDefaults()
+                .subscribe({
+                    showResultsCount(it.totalCount)
+                    gifAdapter.update(it.totalCount)
+                }, {
+                    Timber.e(it, it.message)
+                })
     }
 
     private fun showResultsCount(count: Int) {

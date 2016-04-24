@@ -7,9 +7,14 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 
 /**
- * Always subscribe on IO Thread and observe on UI Thread, prevent blocking UI Thread
+ * Default stuff added to the stream before any subscription.
+ * Always subscribe on IO Thread and observe on UI Thread, prevent blocking UI Thread.
+ * Always log Errors to Timber.
  */
-inline fun <T> Observable<T>.applySchedulers() = subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+inline fun <T> Observable<T>.applyDefaults() =
+        subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError { Timber.e(it, it.message) }
 
 /**
  *  Assert that some condition is true or throw a runtime exception

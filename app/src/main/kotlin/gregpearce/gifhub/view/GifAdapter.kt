@@ -2,13 +2,17 @@ package gregpearce.gifhub.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import gregpearce.gifhub.app.GiphyPageSize
 import gregpearce.gifhub.model.Gif
+import gregpearce.gifhub.presenter.MainPresenter
+import rx.Observable
+import timber.log.Timber
 
-class GifAdapter : RecyclerView.Adapter<GifViewHolder>() {
-    var gifs = listOf<Gif>()
+class GifAdapter(val presenter: MainPresenter) : RecyclerView.Adapter<GifViewHolder>() {
+    var count = 0
 
-    fun setModel(gifs : List<Gif>) {
-        this.gifs = gifs
+    fun update(count: Int) {
+        this.count = count
         notifyDataSetChanged()
     }
 
@@ -17,10 +21,24 @@ class GifAdapter : RecyclerView.Adapter<GifViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return gifs.size
+        return count
     }
 
     override fun onBindViewHolder(holder: GifViewHolder?, position: Int) {
-        holder!!.setModel(gifs[position])
+        holder!!.setModel(getModel(position))
+    }
+
+    private fun getModel(position: Int): Observable<Gif> {
+        // figure out which page to get
+        var pageIndex = position / GiphyPageSize
+        var pagePosition = position - pageIndex * GiphyPageSize
+        Timber.d("Position: $position, Page: $pageIndex, Page Position: $pagePosition")
+
+        // get the page
+        val page = presenter.getSearchResultPage(pageIndex)
+
+        // filter to get the requested gif element within the page
+        return page.flatMap { Observable.from(it.gifs) }
+                .elementAt(pagePosition)
     }
 }
