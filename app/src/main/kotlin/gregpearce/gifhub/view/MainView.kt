@@ -28,7 +28,7 @@ class MainView : LinearLayout {
     lateinit var resultsCountTextView: TextView
     val gifAdapter = GifAdapter()
 
-    private fun init() {
+    init {
         (context as BaseActivity).getComponent().inject(this)
         initView()
         setupViewModel()
@@ -107,17 +107,11 @@ class MainView : LinearLayout {
     }
 
     // todo: see if the constructors can be abstracted out to an interface or something else clever
-    constructor(context: Context?) : super(context) {
-        init()
-    }
+    constructor(context: Context?) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 }
 
 @Suppress("NOTHING_TO_INLINE")
