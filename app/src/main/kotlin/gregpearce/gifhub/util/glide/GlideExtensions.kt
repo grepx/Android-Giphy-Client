@@ -7,7 +7,7 @@ import com.bumptech.glide.request.target.Target
 /**
  * Clean up the ugly anonymous class of the Glide API.
  */
-fun DrawableRequestBuilder<String>.listener(onResourceReady: () -> Unit, onException: () -> Unit): DrawableRequestBuilder<String> {
+inline fun DrawableRequestBuilder<String>.listener(crossinline onResourceReady: () -> Unit, crossinline onException: () -> Unit): DrawableRequestBuilder<String> {
     return this.listener(object : com.bumptech.glide.request.RequestListener<String, GlideDrawable> {
         override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
             onResourceReady()

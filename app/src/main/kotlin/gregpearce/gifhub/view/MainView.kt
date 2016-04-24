@@ -31,7 +31,7 @@ class MainView : LinearLayout {
     private fun init() {
         (context as BaseActivity).getComponent().inject(this)
         initView()
-        subscribeToPresenter()
+        setupViewModel()
     }
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
@@ -61,15 +61,15 @@ class MainView : LinearLayout {
         style(customStyle)
     }
 
-    private fun subscribeToPresenter() {
+    private fun setupViewModel() {
         /* The basic idea:
             - We observe changes to the EditText field
             - flatMap the changes to calls to the presenter search method
             - subscribe to the result and display in the UI
          */
-        searchEditText.textChanges()
+        val searchResultViewModel = searchEditText.textChanges()
                 // subscribe to the text changes on the UI thread
-            .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
                 // convert to a string
                 .map { it.toString() }
                 // wait for 500ms pause between typing characters to prevent spamming the network on every character
@@ -77,16 +77,18 @@ class MainView : LinearLayout {
 
                 // perform a search for the search term
                 .timberd { "Querying for: $it" }
-                .flatMap { presenter.doSearch(it) }
+                // get page 0
+                .flatMap { presenter.doSearch(it, 0) }
 
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
-                .subscribe({
-                    showResultsCount(it.totalCount)
-                    gifAdapter.setModel(it.gifs)
-                }, {
-                    Timber.e(it, it.message)
-                })
+
+        searchResultViewModel.subscribe({
+            showResultsCount(it.totalCount)
+            gifAdapter.setModel(it.gifs)
+        }, {
+            Timber.e(it, it.message)
+        })
     }
 
     private fun showResultsCount(count: Int) {

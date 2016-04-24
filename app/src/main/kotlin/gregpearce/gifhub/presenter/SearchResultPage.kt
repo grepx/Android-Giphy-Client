@@ -1,3 +1,4 @@
 package gregpearce.gifhub.presenter
 
-data class SearchResultPage(val totalCount: Int, val gifs: List<Gif>)
+// by having default "empty" values for everything, we can easily initialize an "empty" SearchResultsPage
+data class SearchResultPage(val totalCount: Int = 0, val gifs: List<Gif> = listOf())

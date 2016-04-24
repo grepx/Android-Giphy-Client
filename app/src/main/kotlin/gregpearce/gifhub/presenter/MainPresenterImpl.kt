@@ -5,6 +5,7 @@ import gregpearce.gifhub.app.GiphyApiKey
 import gregpearce.gifhub.util.rx.assert
 import gregpearce.gifhub.util.rx.timberd
 import rx.Observable
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,16 +15,24 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
 
     // the default view state: an empty search and an empty set of results
     var searchQuery = ""
-    var searchResult = Observable.just(SearchResultPage(0, listOf()))
+
+    var searchPageCache = WeakHashMap<Int, Observable<SearchResultPage>>()
 
     /**
      * Maps search terms to search results (by way of a network query + other business logic)
      */
-    override fun doSearch(query: String): Observable<SearchResultPage> {
-        // if the query parameter has changed, do a new query. Otherwise, reuse the current one.
+    override fun doSearch(query: String, page: Int): Observable<SearchResultPage> {
+        // if the query parameter has changed, clean out the page cache and start again
         if (query != this.searchQuery) {
+            searchPageCache.clear()
             this.searchQuery = query
-            this.searchResult = giphyApi.search(GiphyApiKey, query)
+        }
+        // see if we already have this page cached
+        var searchResultPage = searchPageCache.get(page)
+        // if not, construct and store it
+        if (searchResultPage == null) {
+            // check to see if this page is inside the page cache
+            searchResultPage = giphyApi.search(GiphyApiKey, query)
                     .timberd { "${it.data.size} gifs returned from search." }
                     // assert that the response code is valid
                     .assert({ it.meta.status == 200 },
@@ -37,10 +46,11 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
                         }
                         SearchResultPage(it.pagination.totalCount, urls)
                     }
-                    // cache the result, if there's a config change we can resubmit
+                    // cache the result, if there's a config change, or multiple subscribers in the UI, it is reused
                     .cache()
+            searchPageCache.put(page, searchResultPage)
         }
-        return searchResult
+        return searchResultPage!!
     }
 
     override fun getQuery(): String {
