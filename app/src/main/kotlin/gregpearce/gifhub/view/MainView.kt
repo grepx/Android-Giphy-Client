@@ -7,15 +7,14 @@ import android.view.ViewManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.presenter.MainPresenter
 import gregpearce.gifhub.util.rx.applySchedulers
 import gregpearce.gifhub.util.rx.timberd
-import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
-import org.jetbrains.anko.editText
 import org.jetbrains.anko.recyclerview.v7.recyclerView
-import org.jetbrains.anko.style
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -26,6 +25,7 @@ class MainView : LinearLayout {
     @Inject lateinit var presenter: MainPresenter
 
     lateinit var searchEditText: EditText
+    lateinit var resultsCountTextView: TextView
     val gifAdapter = GifAdapter()
 
     private fun init() {
@@ -40,6 +40,11 @@ class MainView : LinearLayout {
         searchEditText = editText {
             text.insert(0, presenter.getQuery())
             text.insert(0, "cat")
+        }
+
+        resultsCountTextView = textView {
+            padding = dip(5)
+            textSize = 15f
         }
 
         recyclerView {
@@ -64,7 +69,7 @@ class MainView : LinearLayout {
          */
         searchEditText.textChanges()
                 // subscribe to the text changes on the UI thread
-                .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(AndroidSchedulers.mainThread())
                 // convert to a string
                 .map { it.toString() }
                 // wait for 500ms pause between typing characters to prevent spamming the network on every character
@@ -77,10 +82,21 @@ class MainView : LinearLayout {
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applySchedulers()
                 .subscribe({
+                    showResultsCount(it.totalCount)
                     gifAdapter.setModel(it.gifs)
                 }, {
                     Timber.e(it, it.message)
                 })
+    }
+
+    private fun showResultsCount(count: Int) {
+        if (count == 0) {
+            resultsCountTextView.text = "No gifs found"
+        } else if (count == 1) {
+            resultsCountTextView.text = "1 gif found"
+        } else {
+            resultsCountTextView.text = "$count gifs found"
+        }
     }
 
     // todo: see if the constructors can be abstracted out to an interface or something else clever
@@ -98,6 +114,6 @@ class MainView : LinearLayout {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun ViewManager.mainViewImp() = mainViewImp {}
+inline fun ViewManager.mainView() = mainView {}
 
-inline fun ViewManager.mainViewImp(init: MainView.() -> Unit) = ankoView({ MainView(it) }, init)
+inline fun ViewManager.mainView(init: MainView.() -> Unit) = ankoView({ MainView(it) }, init)

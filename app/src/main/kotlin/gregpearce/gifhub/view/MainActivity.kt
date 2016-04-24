@@ -1,27 +1,9 @@
 package gregpearce.gifhub.view
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.text.InputType
-import android.util.Log
-import android.view.Gravity
-import android.view.ViewManager
-import android.widget.Button
-import android.widget.EditText
-import gregpearce.gifhub.api.GiphyApi
-import gregpearce.gifhub.app.GiphyApiKey
-import gregpearce.gifhub.app.MainApplication
-import gregpearce.gifhub.di.DaggerViewComponent
-import gregpearce.gifhub.di.HasComponent
-import gregpearce.gifhub.di.ViewComponent
-import gregpearce.gifhub.di.ViewModule
-import gregpearce.gifhub.util.rx.applySchedulers
-import gregpearce.gifhub.util.rx.assert
-import gregpearce.gifhub.util.rx.debug
-import gregpearce.gifhub.util.rx.timberd
-import org.jetbrains.anko.*
-import timber.log.Timber
-import javax.inject.Inject
+import org.jetbrains.anko.AnkoComponent
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.setContentView
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +14,7 @@ class MainActivity : BaseActivity() {
 
     class RootUI : AnkoComponent<MainActivity> {
         override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
-            mainViewImp()
+            mainView()
         }
     }
 }

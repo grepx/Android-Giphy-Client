@@ -14,12 +14,12 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
 
     // the default view state: an empty search and an empty set of results
     var searchQuery = ""
-    var searchResult = Observable.just(SearchResult(listOf()))
+    var searchResult = Observable.just(SearchResultPage(0, listOf()))
 
     /**
      * Maps search terms to search results (by way of a network query + other business logic)
      */
-    override fun doSearch(query: String): Observable<SearchResult> {
+    override fun doSearch(query: String): Observable<SearchResultPage> {
         // if the query parameter has changed, do a new query. Otherwise, reuse the current one.
         if (query != this.searchQuery) {
             this.searchQuery = query
@@ -35,7 +35,7 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
                         var urls = it.data.map {
                             Gif(it.images.fixedWidth.url, it.images.fixedWidthStill.url)
                         }
-                        SearchResult(urls)
+                        SearchResultPage(it.pagination.totalCount, urls)
                     }
                     // cache the result, if there's a config change we can resubmit
                     .cache()

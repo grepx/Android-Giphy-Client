@@ -14,7 +14,7 @@ data class GiphySearchResponse(val data: List<GiphyData>, val meta: Meta, val pa
 
     data class Meta(val status: Int)
 
-    data class Pagination(val totalCount: Int, val count: Int, val offset: Int)
+    data class Pagination(@SerializedName("total_count") val totalCount: Int, val count: Int, val offset: Int)
 }
 
 
