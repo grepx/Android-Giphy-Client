@@ -24,20 +24,31 @@ class GifView : RelativeLayout {
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
         padding = dip(5)
+        minimumHeight = dip(150)
         layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
 
-        thumbnail = imageView {
-            layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
-            scaleType = ImageView.ScaleType.FIT_CENTER
-        }
+        thumbnail = getThumbnailImageView()
 
         loadingSpinner = progressBar {
             layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
         }
     }
 
+    /**
+     * We need to create a new ImageView each time since otherwise it can cause errors and side effects as Glide
+     * loads a new image and attempts to adjust the size etc.
+     */
+    private fun getThumbnailImageView() : ImageView = imageView {
+        layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
+        scaleType = ImageView.ScaleType.FIT_CENTER
+    }
+
+
     fun setModel(gif: Gif) {
         showView(ViewState.LoadingSpinner)
+        // clear any old unfinished Glide loads from the image view
+        Glide.clear(thumbnail)
+        thumbnail = getThumbnailImageView()
         Glide.with(context).load(gif.thumbnailUrl)
                 .listener({
                     showView(ViewState.Thumbnail)
