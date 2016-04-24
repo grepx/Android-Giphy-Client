@@ -1,12 +1,12 @@
-package gregpearce.gifhub.presenter
+package gregpearce.gifhub.ui.presenter
 
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.app.GiphyApiKey
 import gregpearce.gifhub.app.GiphyPageSize
 import gregpearce.gifhub.app.GiphyPageStart
-import gregpearce.gifhub.model.Gif
-import gregpearce.gifhub.model.SearchMetaData
-import gregpearce.gifhub.model.SearchResultPage
+import gregpearce.gifhub.ui.model.Gif
+import gregpearce.gifhub.ui.model.SearchMetaData
+import gregpearce.gifhub.ui.model.SearchResultPage
 import gregpearce.gifhub.util.rx.assert
 import gregpearce.gifhub.util.rx.timberd
 import rx.Observable

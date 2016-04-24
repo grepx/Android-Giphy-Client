@@ -1,10 +1,10 @@
-package gregpearce.gifhub.view
+package gregpearce.gifhub.ui.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import gregpearce.gifhub.app.GiphyPageSize
-import gregpearce.gifhub.model.Gif
-import gregpearce.gifhub.presenter.MainPresenter
+import gregpearce.gifhub.ui.model.Gif
+import gregpearce.gifhub.ui.presenter.MainPresenter
 import rx.Observable
 import timber.log.Timber
 

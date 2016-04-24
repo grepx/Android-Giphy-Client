@@ -10,8 +10,8 @@ import dagger.Module
 import dagger.Provides
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.app.GiphyApiUrl
-import gregpearce.gifhub.presenter.MainPresenter
-import gregpearce.gifhub.presenter.MainPresenterImpl
+import gregpearce.gifhub.ui.presenter.MainPresenter
+import gregpearce.gifhub.ui.presenter.MainPresenterImpl
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory

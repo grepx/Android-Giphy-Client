@@ -1,9 +1,9 @@
 package gregpearce.gifhub.di
 
 import dagger.Component
-import gregpearce.gifhub.view.GifAdapter
-import gregpearce.gifhub.view.MainActivity
-import gregpearce.gifhub.view.MainView
+import gregpearce.gifhub.ui.view.GifAdapter
+import gregpearce.gifhub.ui.view.MainActivity
+import gregpearce.gifhub.ui.view.MainView
 
 @ViewScope
 @Component(

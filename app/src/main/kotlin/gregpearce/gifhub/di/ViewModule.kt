@@ -3,7 +3,7 @@ package gregpearce.gifhub.di
 import android.app.Activity
 import dagger.Module
 import dagger.Provides
-import gregpearce.gifhub.view.BaseActivity
+import gregpearce.gifhub.ui.view.BaseActivity
 
 /**
  * A module for defining View scope dependencies.

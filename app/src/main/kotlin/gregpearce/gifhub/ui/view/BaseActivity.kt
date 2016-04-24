@@ -1,4 +1,4 @@
-package gregpearce.gifhub.view
+package gregpearce.gifhub.ui.view
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

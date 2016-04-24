@@ -1,4 +1,4 @@
-package gregpearce.gifhub.view
+package gregpearce.gifhub.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import gregpearce.gifhub.R
-import gregpearce.gifhub.model.Gif
+import gregpearce.gifhub.ui.model.Gif
 import gregpearce.gifhub.util.glide.listener
 import gregpearce.gifhub.util.rx.addToComposite
 import gregpearce.gifhub.util.rx.applyDefaults

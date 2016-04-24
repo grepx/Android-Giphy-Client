@@ -1,9 +1,9 @@
 package gregpearce.gifhub.di
 
 import dagger.Component
-import gregpearce.gifhub.view.MainActivity
+import gregpearce.gifhub.ui.view.MainActivity
 import gregpearce.gifhub.app.MainApplication
-import gregpearce.gifhub.presenter.MainPresenter
+import gregpearce.gifhub.ui.presenter.MainPresenter
 import javax.inject.Singleton
 
 @Singleton

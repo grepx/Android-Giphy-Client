@@ -1,4 +1,4 @@
-package gregpearce.gifhub.view
+package gregpearce.gifhub.ui.view
 
 import android.content.Context
 import android.support.v7.widget.GridLayoutManager
@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.app.GiphyPageStart
-import gregpearce.gifhub.presenter.MainPresenter
+import gregpearce.gifhub.ui.presenter.MainPresenter
 import gregpearce.gifhub.util.rx.applyDefaults
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*

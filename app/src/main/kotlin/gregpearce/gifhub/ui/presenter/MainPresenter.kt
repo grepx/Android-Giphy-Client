@@ -1,7 +1,7 @@
-package gregpearce.gifhub.presenter
+package gregpearce.gifhub.ui.presenter
 
-import gregpearce.gifhub.model.SearchMetaData
-import gregpearce.gifhub.model.SearchResultPage
+import gregpearce.gifhub.ui.model.SearchMetaData
+import gregpearce.gifhub.ui.model.SearchResultPage
 import rx.Observable
 
 interface MainPresenter {
