@@ -59,16 +59,19 @@ class GifView : RelativeLayout {
 
         gif.applyDefaults()
                 .subscribe ({
-                    displayGif(it)
+                    setupGifView(it)
                 }, {
                     Timber.e(it, it.message)
                 }).addToComposite(subscription)
     }
 
-    private fun displayGif(gif: Gif) {
+    private fun setupGifView(gif: Gif) {
         // clear any old unfinished Glide loads from the image view
         Glide.clear(thumbnail)
         thumbnail = getThumbnailImageView()
+        thumbnail.onClick {
+            context.startActivity<GifDetailActivity>(GifDetailActivity.INTENT_EXTRA_URL to gif.url)
+        }
         Glide.with(context).load(gif.thumbnailUrl)
                 .listener({
                     showView(ViewState.Thumbnail)

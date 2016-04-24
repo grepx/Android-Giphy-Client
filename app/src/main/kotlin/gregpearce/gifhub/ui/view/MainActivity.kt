@@ -8,11 +8,10 @@ import org.jetbrains.anko.setContentView
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getComponent().inject(this)
         RootUI().setContentView(this)
     }
 
-    class RootUI : AnkoComponent<MainActivity> {
+    private class RootUI : AnkoComponent<MainActivity> {
         override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
             mainView()
         }

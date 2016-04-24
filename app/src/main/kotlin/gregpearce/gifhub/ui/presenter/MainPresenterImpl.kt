@@ -51,7 +51,7 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
                     .map {
                         // map the network model to the view model
                         val urls = it.data.map {
-                            Gif(it.images.fixedWidth.url, it.images.fixedWidthStill.url)
+                            Gif(it.images.fixedWidthSmall.url, it.images.fixedWidthStill.url)
                         }
                         SearchResultPage(it.pagination.totalCount, urls)
                     }
