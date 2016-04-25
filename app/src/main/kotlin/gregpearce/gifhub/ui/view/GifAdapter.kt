@@ -38,7 +38,6 @@ class GifAdapter(val presenter: MainPresenter) : RecyclerView.Adapter<GifViewHol
         val page = presenter.getSearchResultPage(pageIndex)
 
         // filter to get the requested gif element within the page
-        return page.flatMap { Observable.from(it.gifs) }
-                .elementAt(pagePosition)
+        return page.map { it.gifs.elementAt(pagePosition) }
     }
 }
