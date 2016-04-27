@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
-import gregpearce.gifhub.app.GiphyPageStart
 import gregpearce.gifhub.ui.presenter.MainPresenter
 import gregpearce.gifhub.util.rx.applyDefaults
 import gregpearce.gifhub.util.rx.timberd
@@ -41,7 +40,6 @@ class MainView : LinearLayout {
 
         searchEditText = editText {
             text.insert(0, presenter.getQuery())
-            text.insert(0, "cat")
         }
 
         resultsCountTextView = textView {
@@ -84,15 +82,16 @@ class MainView : LinearLayout {
                 // get page 0
                 .flatMap {
                     presenter.setQuery(it)
-                    presenter.getSearchResultPage(GiphyPageStart)
+                    presenter.getSearchMetaData()
                 }
-
-        searchResultViewModel
                 // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
                 .applyDefaults()
+
+        gifAdapter.setModel(searchResultViewModel)
+
+        searchResultViewModel
                 .subscribe({
                     showResultsCount(it.totalCount)
-                    gifAdapter.update(it.totalCount)
                 }, {
                     Timber.e(it, it.message)
                 })

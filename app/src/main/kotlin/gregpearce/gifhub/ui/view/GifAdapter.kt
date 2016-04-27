@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import gregpearce.gifhub.app.GiphyPageSize
 import gregpearce.gifhub.ui.model.Gif
+import gregpearce.gifhub.ui.model.SearchMetaData
 import gregpearce.gifhub.ui.presenter.MainPresenter
 import rx.Observable
 import timber.log.Timber
@@ -11,7 +12,15 @@ import timber.log.Timber
 class GifAdapter(val presenter: MainPresenter) : RecyclerView.Adapter<GifViewHolder>() {
     var count = 0
 
-    fun update(count: Int) {
+    fun setModel(model: Observable<SearchMetaData>) {
+        model.subscribe ({
+            updateCount(it.totalCount)
+        }, {
+            updateCount(0)
+        })
+    }
+
+    private fun updateCount(count: Int) {
         this.count = count
         notifyDataSetChanged()
     }
@@ -25,10 +34,10 @@ class GifAdapter(val presenter: MainPresenter) : RecyclerView.Adapter<GifViewHol
     }
 
     override fun onBindViewHolder(holder: GifViewHolder?, position: Int) {
-        holder!!.setModel(getModel(position))
+        holder!!.setModel(getGifModel(position))
     }
 
-    private fun getModel(position: Int): Observable<Gif> {
+    private fun getGifModel(position: Int): Observable<Gif> {
         // figure out which page to get
         var pageIndex = position / GiphyPageSize
         var pagePosition = position - pageIndex * GiphyPageSize
