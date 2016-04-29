@@ -1,8 +1,9 @@
 package gregpearce.gifhub.di
 
 import dagger.Component
-import gregpearce.gifhub.ui.view.GifDetailActivity
+import gregpearce.gifhub.ui.view.BaseActivity
 import gregpearce.gifhub.ui.view.GifAdapter
+import gregpearce.gifhub.ui.view.GifDetailActivity
 import gregpearce.gifhub.ui.view.MainView
 
 @ViewScope
@@ -14,4 +15,5 @@ interface ViewComponent {
     fun inject(mainView: MainView)
     fun inject(mainView: GifAdapter)
     fun inject(activity: GifDetailActivity)
+    fun inject(activity: BaseActivity)
 }

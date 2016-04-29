@@ -1,7 +1,9 @@
 package gregpearce.gifhub.ui.view
 
 import android.content.Context
+import android.os.Parcelable
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.ViewManager
 import android.widget.Button
@@ -10,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.MainPresenter
+import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
@@ -23,30 +26,55 @@ import javax.inject.Inject
 class MainView : LinearLayout {
     @Inject lateinit var activity: BaseActivity
     @Inject lateinit var presenter: MainPresenter
+    @Inject lateinit var instanceStateManager: InstanceStateManager
 
     lateinit var searchEditText: EditText
     lateinit var resultsCountTextView: TextView
+    lateinit var resultsRecyclerView: RecyclerView
     val gifAdapter: GifAdapter
 
     init {
-        (context as BaseActivity).getComponent().inject(this)
-        gifAdapter = GifAdapter(presenter)
+        var activity = context as BaseActivity
+        activity.viewComponent.inject(this)
+        gifAdapter = GifAdapter(activity)
+
         initView()
+        configureInstanceState()
+
         setupViewModel()
+    }
+
+    /**
+     * Contains the code for saving and restoring instance state.
+     */
+    private fun configureInstanceState() {
+        val keyBase = "MainView_"
+
+        val keyQuery = keyBase + "Query"
+        val query = instanceStateManager.savedState.getString(keyQuery, "")
+        searchEditText.text.append(query)
+
+        val keyLayoutState = keyBase + "LayoutState"
+        val layoutState = instanceStateManager.savedState.getParcelable<Parcelable>(keyLayoutState)
+        resultsRecyclerView.layoutManager.onRestoreInstanceState(layoutState)
+
+        instanceStateManager.registerSaveLambda {
+            it.putString(keyQuery, searchEditText.text.toString())
+            it.putParcelable(keyLayoutState, resultsRecyclerView.layoutManager.onSaveInstanceState())
+        }
     }
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
         orientation = VERTICAL
 
         searchEditText = editText { }
-        searchEditText.setText(presenter.getQuery())
 
         resultsCountTextView = textView {
             padding = dip(5)
             textSize = 15f
         }
 
-        recyclerView {
+        resultsRecyclerView = recyclerView {
             adapter = gifAdapter
             layoutManager = GridLayoutManager(activity, 2)
         }

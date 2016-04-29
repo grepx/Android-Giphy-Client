@@ -1,5 +1,5 @@
 package gregpearce.gifhub.di
 
-interface HasComponent {
-    fun getComponent() : ViewComponent
-}
+//interface HasComponent {
+//    fun getComponent() : ViewComponent
+//}

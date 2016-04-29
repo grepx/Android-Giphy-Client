@@ -72,8 +72,4 @@ class MainPresenterImpl @Inject constructor() : MainPresenter {
             this.searchQuery = query
         }
     }
-
-    override fun getQuery(): String {
-        return searchQuery
-    }
 }
