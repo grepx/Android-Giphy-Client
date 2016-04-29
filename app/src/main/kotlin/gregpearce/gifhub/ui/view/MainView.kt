@@ -38,9 +38,8 @@ class MainView : LinearLayout {
     private fun initView() = AnkoContext.createDelegate(this).apply {
         orientation = VERTICAL
 
-        searchEditText = editText {
-            text.insert(0, presenter.getQuery())
-        }
+        searchEditText = editText { }
+        searchEditText.setText(presenter.getQuery())
 
         resultsCountTextView = textView {
             padding = dip(5)
