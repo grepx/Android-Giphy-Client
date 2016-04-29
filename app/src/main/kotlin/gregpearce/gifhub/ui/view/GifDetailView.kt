@@ -4,43 +4,32 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.ViewManager
+import android.webkit.WebView
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.ProgressBar
-import com.bumptech.glide.Glide
-import gregpearce.gifhub.R
-import gregpearce.gifhub.util.glide.listener
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.webView
 import timber.log.Timber
 
 class GifDetailView : FrameLayout {
 
-    lateinit var gifImageView: ImageView
-    lateinit var loadingSpinner: ProgressBar
+    lateinit var gifWebView: WebView
 
     init {
         initView()
         val url = (context as GifDetailActivity).getUrl()
         Timber.d("Loading gif url: $url")
 
-        // todo: it's dumb that I need to cast this back to context...
-        Glide.with(context as Context).load(url)
-                .listener({
-                    loadingSpinner.visibility = GONE
-                }, {
-                    gifImageView.setImageResource(R.mipmap.ic_launcher)
-                })
-                .into(gifImageView)
+        gifWebView.loadUrl(url)
+        gifWebView.loadDataWithBaseURL(url, "<html><img style='width:100%' src='$url' /></html>", null, null, null)
     }
 
     private fun initView() = AnkoContext.createDelegate(this).apply {
-        gifImageView = imageView {
+        gifWebView = webView {
             layoutParams = ViewGroup.LayoutParams(matchParent, matchParent)
-            maxWidth = dip(300)
-            maxHeight = dip(300)
         }
-        loadingSpinner = progressBar {  }
     }
 
     constructor(context: Context?) : super(context)
