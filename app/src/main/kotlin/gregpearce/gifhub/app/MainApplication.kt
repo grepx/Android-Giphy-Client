@@ -9,8 +9,7 @@ import timber.log.Timber
 class MainApplication : Application() {
 
     companion object {
-        lateinit var
-                graph: ApplicationComponent
+        lateinit var graph: ApplicationComponent
     }
 
     override fun onCreate() {

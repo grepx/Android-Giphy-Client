@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.MainPresenter
+import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
 import gregpearce.gifhub.util.rx.timberd
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class MainView : LinearLayout {
     @Inject lateinit var activity: BaseActivity
     @Inject lateinit var presenter: MainPresenter
+    @Inject lateinit var searchPresenter: SearchPresenter
     @Inject lateinit var instanceStateManager: InstanceStateManager
 
     lateinit var searchEditText: EditText
@@ -41,7 +43,28 @@ class MainView : LinearLayout {
         initView()
         configureInstanceState()
 
-        setupViewModel()
+//        setupViewModel()
+        subscribePresenter()
+    }
+
+    private fun subscribePresenter() {
+        val query = searchEditText.textChanges()
+                // subscribe to the text changes on the UI thread
+                .subscribeOn(AndroidSchedulers.mainThread())
+                // convert to a string
+                .map { it.toString() }
+                // wait for 500ms pause between typing characters to prevent spamming the network on every character
+                .debounce(500, TimeUnit.MILLISECONDS)
+                // filter out duplicates
+                .distinctUntilChanged()
+
+        searchPresenter.subscribe(query)
+        searchPresenter.getResults().subscribe {
+            Timber.d("page count - ${it.totalCount}")
+        }
+        searchPresenter.getResults().subscribe {
+            Timber.d("other page count - ${it.totalCount}")
+        }
     }
 
     /**
