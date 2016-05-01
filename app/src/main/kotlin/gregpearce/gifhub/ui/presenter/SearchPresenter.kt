@@ -14,7 +14,7 @@ class SearchPresenter @Inject constructor() {
     @Inject lateinit var giphySearchCache: GiphySearchCache
 
     var querySubject = PublishSubject<String>()
-    var query = querySubject.asObservable()
+    var query = querySubject.asObservable().replay(1).autoConnect()
 
     fun subscribe(query: Observable<String>) {
         query.subscribe(querySubject)

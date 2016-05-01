@@ -4,23 +4,26 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import gregpearce.gifhub.app.GiphyPageSize
 import gregpearce.gifhub.ui.model.Gif
-import gregpearce.gifhub.ui.model.SearchMetaData
-import gregpearce.gifhub.ui.presenter.MainPresenter
+import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
+import gregpearce.gifhub.util.rx.applyDefaults
 import rx.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
 class GifAdapter(val activity: BaseActivity) : RecyclerView.Adapter<GifViewHolder>() {
 
-    @Inject lateinit var presenter: MainPresenter
+    @Inject lateinit var presenter: SearchPresenter
     @Inject lateinit var instanceStateManager: InstanceStateManager
 
     var count = 0
 
     init {
         activity.viewComponent.inject(this)
+
         configureInstanceState()
+
+        subscribeView()
     }
 
     private fun configureInstanceState() {
@@ -34,15 +37,18 @@ class GifAdapter(val activity: BaseActivity) : RecyclerView.Adapter<GifViewHolde
         }
     }
 
-    fun setModel(model: Observable<SearchMetaData>) {
-        model.subscribe ({
-            updateCount(it.totalCount)
-        }, {
-            updateCount(0)
-        })
+    fun subscribeView() {
+        presenter.getResults()
+                .applyDefaults()
+                .subscribe ({
+                    updateCount(it.totalCount)
+                }, {
+                    updateCount(0)
+                })
     }
 
     private fun updateCount(count: Int) {
+        Timber.d("Updating count to: $count")
         this.count = count
         notifyDataSetChanged()
     }
@@ -66,7 +72,7 @@ class GifAdapter(val activity: BaseActivity) : RecyclerView.Adapter<GifViewHolde
         Timber.d("Position: $position, Page: $pageIndex, Page Position: $pagePosition")
 
         // get the page
-        val page = presenter.getSearchResultPage(pageIndex)
+        val page = presenter.getResultPage(pageIndex)
 
         // filter to get the requested gif element within the page
         return page.map { it.gifs.elementAt(pagePosition) }

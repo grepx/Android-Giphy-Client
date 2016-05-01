@@ -56,7 +56,6 @@ class GifView : RelativeLayout {
         showView(ViewState.LoadingSpinner)
         // unsubscribe the previous subscription
         subscription.clear()
-
         gif.applyDefaults()
                 .subscribe ({
                     setupGifView(it)

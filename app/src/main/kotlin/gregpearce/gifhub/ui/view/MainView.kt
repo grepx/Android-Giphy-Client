@@ -15,7 +15,6 @@ import gregpearce.gifhub.ui.presenter.MainPresenter
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
-import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -117,35 +116,6 @@ class MainView : LinearLayout {
         style(customStyle)
     }
 
-    private fun setupViewModel() {
-        /* The basic idea:
-            - We observe changes to the EditText field
-            - flatMap the changes to calls to the presenter search method
-            - subscribe to the result and display in the UI
-         */
-        val searchResultViewModel = searchEditText.textChanges()
-                // subscribe to the text changes on the UI thread
-                .subscribeOn(AndroidSchedulers.mainThread())
-                // convert to a string
-                .map { it.toString() }
-                // wait for 500ms pause between typing characters to prevent spamming the network on every character
-                .debounce(500, TimeUnit.MILLISECONDS)
-                // filter out duplicates
-                .distinctUntilChanged()
-
-                // perform a search for the search term
-                .timberd { "Querying for: $it" }
-                // get page 0
-                .flatMap {
-                    presenter.setQuery(it)
-                    presenter.getSearchMetaData()
-                }
-                // apply the default schedulers just before subscribe, so all the above work is done off the UI Thread
-                .applyDefaults()
-
-        gifAdapter.setModel(searchResultViewModel)
-    }
-
     private fun showResultsCount(count: Int) {
         if (count == 0) {
             resultsCountTextView.text = "No gifs found"
@@ -156,7 +126,6 @@ class MainView : LinearLayout {
         }
     }
 
-    // todo: see if the constructors can be abstracted out to an interface or something else clever
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
