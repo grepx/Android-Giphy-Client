@@ -43,8 +43,10 @@ class MainView : LinearLayout {
         initView()
         configureInstanceState()
 
-//        setupViewModel()
+        // subscribe the presenter to input from this view
         subscribePresenter()
+        // subscribe this view to output from the presenter
+        subscribeView()
     }
 
     private fun subscribePresenter() {
@@ -59,12 +61,16 @@ class MainView : LinearLayout {
                 .distinctUntilChanged()
 
         searchPresenter.subscribe(query)
-        searchPresenter.getResults().subscribe {
-            Timber.d("page count - ${it.totalCount}")
-        }
-        searchPresenter.getResults().subscribe {
-            Timber.d("other page count - ${it.totalCount}")
-        }
+    }
+
+    private fun subscribeView() {
+        searchPresenter.getResults()
+                .applyDefaults()
+                .subscribe({
+                    showResultsCount(it.totalCount)
+                }, {
+                    Timber.e(it, it.message)
+                })
     }
 
     /**
@@ -138,13 +144,6 @@ class MainView : LinearLayout {
                 .applyDefaults()
 
         gifAdapter.setModel(searchResultViewModel)
-
-        searchResultViewModel
-                .subscribe({
-                    showResultsCount(it.totalCount)
-                }, {
-                    Timber.e(it, it.message)
-                })
     }
 
     private fun showResultsCount(count: Int) {
