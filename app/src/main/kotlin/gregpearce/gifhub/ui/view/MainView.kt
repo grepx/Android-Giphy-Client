@@ -115,8 +115,6 @@ class MainView : LinearLayout {
     }
 
     private fun showResultsCount(count: Int) {
-        // scroll the the top each time there is a new set of search results
-        resultsRecyclerView.scrollToPosition(0)
         if (count == 0) {
             resultsCountTextView.text = "No gifs found"
         } else if (count == 1) {
