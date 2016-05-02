@@ -18,8 +18,10 @@ class GiphySearchCache @Inject constructor() {
     var lastSearch = ""
 
     fun getPage(search: String, pageIndex: Int): Observable<GiphySearchResponse> {
-        if (lastSearch != search)
+        if (lastSearch != search) {
             cache.evictAll()
+            lastSearch = search
+        }
 
         var page = cache.get(pageIndex)
         if (page == null) {
