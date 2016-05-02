@@ -35,9 +35,9 @@ class GiphySearchCache @Inject constructor() {
         Timber.d("Fetching page: $pageIndex")
 
         // calculate offset for this page
-        val offset = (pageIndex + GiphyPageStart) * GiphyPageSize
+        val offset = (pageIndex + GIPHY_PAGE_START) * GIPHY_PAGE_SIZE
 
-        return giphyApi.search(GiphyApiKey, search, offset, GiphyPageSize)
+        return giphyApi.search(GIPHY_API_KEY, search, offset, GIPHY_PAGE_SIZE)
                 .timberd { "${it.data.size} gifs returned from search." }
                 // assert that the response code is valid
                 .assert({ it.meta.status == 200 },

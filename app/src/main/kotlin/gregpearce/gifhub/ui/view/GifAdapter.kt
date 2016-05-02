@@ -2,7 +2,7 @@ package gregpearce.gifhub.ui.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import gregpearce.gifhub.app.GiphyPageSize
+import gregpearce.gifhub.app.GIPHY_PAGE_SIZE
 import gregpearce.gifhub.ui.model.Gif
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
@@ -67,8 +67,8 @@ class GifAdapter(val activity: BaseActivity) : RecyclerView.Adapter<GifViewHolde
 
     private fun getGifModel(position: Int): Observable<Gif> {
         // figure out which page to get
-        var pageIndex = position / GiphyPageSize
-        var pagePosition = position - pageIndex * GiphyPageSize
+        var pageIndex = position / GIPHY_PAGE_SIZE
+        var pagePosition = position - pageIndex * GIPHY_PAGE_SIZE
         Timber.d("Position: $position, Page: $pageIndex, Page Position: $pagePosition")
 
         // get the page
