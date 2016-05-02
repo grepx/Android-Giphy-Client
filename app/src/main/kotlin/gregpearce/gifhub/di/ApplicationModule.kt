@@ -2,19 +2,14 @@ package gregpearce.gifhub.di
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
-import javax.inject.Named
-import javax.inject.Singleton
-
 import dagger.Module
 import dagger.Provides
 import gregpearce.gifhub.api.GiphyApi
 import gregpearce.gifhub.app.GiphyApiUrl
-import gregpearce.gifhub.ui.presenter.MainPresenter
-import gregpearce.gifhub.ui.presenter.MainPresenterImpl
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory
+import javax.inject.Singleton
 
 /**
  * A module for defining Application scope dependencies.
@@ -37,11 +32,5 @@ class ApplicationModule(private val application: Application) {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         return retrofit.create(GiphyApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideMainPresenter(presenter: MainPresenterImpl): MainPresenter {
-        return presenter
     }
 }

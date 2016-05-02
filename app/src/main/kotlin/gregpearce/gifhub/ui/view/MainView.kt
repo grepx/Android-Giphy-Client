@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.widget.textChanges
-import gregpearce.gifhub.ui.presenter.MainPresenter
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
@@ -25,7 +24,6 @@ import javax.inject.Inject
 
 class MainView : LinearLayout {
     @Inject lateinit var activity: BaseActivity
-    @Inject lateinit var presenter: MainPresenter
     @Inject lateinit var searchPresenter: SearchPresenter
     @Inject lateinit var instanceStateManager: InstanceStateManager
 
