@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
+import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -56,6 +57,7 @@ class MainView : LinearLayout {
                 .debounce(500, TimeUnit.MILLISECONDS)
                 // filter out duplicates
                 .distinctUntilChanged()
+                .timberd { "Sending search term to presenter: $it"}
 
         searchPresenter.subscribe(query)
     }

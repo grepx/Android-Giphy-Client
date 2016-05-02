@@ -1,5 +1,6 @@
 package gregpearce.gifhub.ui.presenter
 
+import com.squareup.sqlbrite.BriteDatabase
 import gregpearce.gifhub.app.GiphySearchCache
 import gregpearce.gifhub.di.ViewScope
 import gregpearce.gifhub.ui.model.Gif
@@ -12,6 +13,7 @@ import javax.inject.Inject
 @ViewScope
 class SearchPresenter @Inject constructor() {
     @Inject lateinit var giphySearchCache: GiphySearchCache
+    @Inject lateinit var db: BriteDatabase
 
     var querySubject = PublishSubject<String>()
     var query = querySubject.asObservable().replay(1).autoConnect()
