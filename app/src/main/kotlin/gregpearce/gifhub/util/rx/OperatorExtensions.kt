@@ -41,6 +41,17 @@ fun <T> Observable<T>.assert(condition: (T) -> Boolean, message: (T) -> String) 
         }
 
 /**
+ *  An ongoing, streaming count of the number of items that have been received.
+ */
+fun <T> Observable<T>.scanCount() =
+        map { 1 }
+                .scan {
+                    sum: Int?, value: Int? ->
+                    sum!! + value!!
+                }
+
+
+/**
  *  For inserting temporary log statements into a stream to help with debugging
  */
 fun <T> Observable<T>.debug(getMessage: (T) -> String) =

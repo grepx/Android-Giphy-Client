@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
+import gregpearce.gifhub.util.rx.scanCount
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
@@ -57,7 +58,7 @@ class MainView : LinearLayout {
                 .debounce(500, TimeUnit.MILLISECONDS)
                 // filter out duplicates
                 .distinctUntilChanged()
-                .timberd { "Sending search term to presenter: $it"}
+                .timberd { "Sending search term to presenter: $it" }
 
         searchPresenter.subscribe(query)
     }
@@ -70,6 +71,15 @@ class MainView : LinearLayout {
                 }, {
                     Timber.e(it, it.message)
                 })
+
+        // reset the scroll position of the results each time a new set of search results is received
+        // don't do it on the first set though, since that would cause a reset on configuration changes
+        searchPresenter.getResults()
+                .scanCount()
+                .applyDefaults()
+                .subscribe {
+                    if (it > 1) resetScrollPosition()
+                }
     }
 
     /**
@@ -124,6 +134,11 @@ class MainView : LinearLayout {
         } else {
             resultsCountTextView.text = "$count gifs found"
         }
+    }
+
+    private fun resetScrollPosition() {
+        Timber.d("Reseting scroll position")
+        resultsRecyclerView.layoutManager.scrollToPosition(0)
     }
 
     constructor(context: Context?) : super(context)
