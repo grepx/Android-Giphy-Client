@@ -1,5 +1,6 @@
 package gregpearce.gifhub.di
 
+import com.squareup.sqlbrite.BriteDatabase
 import dagger.Component
 import gregpearce.gifhub.app.GiphySearchCache
 import gregpearce.gifhub.app.MainApplication
@@ -11,4 +12,5 @@ interface ApplicationComponent {
     fun inject(application: MainApplication)
 
     fun exposeGiphySearchCache(): GiphySearchCache
+    fun exposeBriteDatabase(): BriteDatabase
 }

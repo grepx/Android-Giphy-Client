@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
-import gregpearce.gifhub.util.rx.scanCount
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
@@ -73,12 +72,12 @@ class MainView : LinearLayout {
                 })
 
         // reset the scroll position of the results each time a new set of search results is received
-        // don't do it on the first set though, since that would cause a reset on configuration changes
+        // don't do it on the first results though, since that would cause a reset on configuration changes
         searchPresenter.getResults()
-                .scanCount()
+                .skip(1)
                 .applyDefaults()
                 .subscribe {
-                    if (it > 1) resetScrollPosition()
+                    resetScrollPosition()
                 }
     }
 
