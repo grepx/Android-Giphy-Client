@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.widget.textChanges
 import gregpearce.gifhub.ui.presenter.SearchPresenter
 import gregpearce.gifhub.ui.util.InstanceStateManager
 import gregpearce.gifhub.util.rx.applyDefaults
+import gregpearce.gifhub.util.rx.indexItems
 import gregpearce.gifhub.util.rx.timberd
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
@@ -64,21 +65,18 @@ class MainView : LinearLayout {
 
     private fun subscribeView() {
         searchPresenter.getResults()
+                .indexItems()
                 .applyDefaults()
                 .subscribe({
-                    showResultsCount(it.totalCount)
+                    // reset the scroll position for each new set of search resets
+                    // except the first set, which could be after a config change
+                    if (it.index > 0) {
+                        resetScrollPosition()
+                    }
+                    showResultsCount(it.item.totalCount)
                 }, {
                     Timber.e(it, it.message)
                 })
-
-        // reset the scroll position of the results each time a new set of search results is received
-        // don't do it on the first results though, since that would cause a reset on configuration changes
-        searchPresenter.getResults()
-                .skip(1)
-                .applyDefaults()
-                .subscribe {
-                    resetScrollPosition()
-                }
     }
 
     /**
