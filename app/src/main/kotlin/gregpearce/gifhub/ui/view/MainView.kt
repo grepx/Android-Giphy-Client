@@ -70,9 +70,7 @@ class MainView : LinearLayout {
                 .subscribe({
                     // reset the scroll position for each new set of search resets
                     // except the first set, which could be after a config change
-                    if (it.index > 0) {
-                        resetScrollPosition()
-                    }
+                    if (it.index > 0) resetScrollPosition()
                     showResultsCount(it.item.totalCount)
                 }, {
                     Timber.e(it, it.message)
