@@ -17,10 +17,12 @@ class DbOpenHelper(context: Context) : ManagedSQLiteOpenHelper(context, DB_FILEN
                 GifTable.COLUMN_THUMBNAIL_PATH to TEXT,
                 GifTable.COLUMN_FAVOURITED to INTEGER
         )
+
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.dropTable(GifTable.NAME, true)
+        onCreate(db)
     }
 
 }
