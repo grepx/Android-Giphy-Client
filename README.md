@@ -1,4 +1,4 @@
-# gifhub
+# Android Giphy Client
 An example project for using Kotlin, rxJava, Anko, Dagger and many other libraries in an Andorid app. 
 
 Learning it all and trying to come up with a decent architecture that could scale to real apps as I go along.
